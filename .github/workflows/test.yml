@@ -43,10 +43,23 @@ jobs:
           which pip
           pip install -e . --no-deps --force-reinstall
 
+      - name: get micromamba nightly
+        shell: bash -l {0}
+        if: runner.os == 'Linux'
+        run: |
+          conda activate test
+          curl -L https://github.com/mamba-org/boa-forge/releases/download/micromamba-nightly-21.3.11.1046/micromamba-nightly-linux-64 -o $CONDA_PREFIX/bin/micromamba
+      - name: get micromamba nightly
+        shell: bash -l {0}
+        if: runner.os == 'macOS'
+        run: |
+          conda activate test
+          curl -L https://github.com/mamba-org/boa-forge/releases/download/micromamba-nightly-21.3.11.1046/micromamba-nightly-osx-64 -o $CONDA_PREFIX/bin/micromamba
       - name: run-test
         shell: bash -l {0}
         run: |
           conda activate test
+          micromamba -v 
           cp -a tests "${RUNNER_TEMP}/"
           pushd "${RUNNER_TEMP}"
           export TMPDIR="${RUNNER_TEMP}"
